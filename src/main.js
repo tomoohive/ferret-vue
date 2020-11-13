@@ -17,7 +17,7 @@ firebase.auth().onAuthStateChanged(user => {
     }
     store.commit("firebase/onAuthEmailChanged", user.email);
     if (user.uid) {
-      store.commit("firebase/onUserStatesChanged", true);
+      store.commit("firebase/onUserStatusChanged", true);
     } else {
       store.commit("firebase/onUserStatusChanged", false);
     }

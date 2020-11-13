@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Account from "../views/Account.vue";
 import EvaluateFashion from "../views/EvaluateFashion.vue";
 import LogIn from "../components/LogIn.vue";
+import InitialAccount from "../views/InitialAccount.vue";
 import Home from "../views/Home.vue";
 
 import Firebase from "../firebase";
@@ -31,7 +32,7 @@ const routes = [
   {
     path: "/initialize",
     name: "InitialAccount",
-    component: () => import("../views/InitialAccount.vue")
+    component: InitialAccount
   },
   {
     path: "/evaluate",
@@ -46,10 +47,6 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue")
-  },
-  {
-    path: "/:catchAll(.*)",
-    redirect: "/"
   }
 ];
 
@@ -76,7 +73,7 @@ router.beforeEach((to, from, next) => {
   if (!requiresAuth) {
     next();
   } else if (requiresAuth && !currnetUserStatus) {
-    next("/");
+    next("/home");
   } else {
     next();
   }

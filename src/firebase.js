@@ -1,5 +1,7 @@
 import firebase from "@firebase/app";
 import "@firebase/auth";
+import "@firebase/storage";
+import "@firebase/firestore";
 import router from "./router";
 import store from "./store";
 
@@ -17,7 +19,7 @@ export default {
   // initialize firebase settings
   init() {
     firebase.initializeApp(firebaseConfig);
-    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+    // firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
   },
 
   // login using email & password
@@ -30,9 +32,9 @@ export default {
         res => {
           res.user.getIdToken().then(idToken => {
             localStorage.setItem("jwt", idToken);
-            router.push("/").catch(err => {
+            router.push("/home").catch(err => {
               console.log(err);
-              console.log("router push /");
+              console.log("router push /home");
             });
           });
         },
@@ -45,12 +47,15 @@ export default {
   // making account using email & password
   // After making account, routing for '/signin'
   singUpWithEmailAndPassword(email, password) {
+    console.log('SighUp')
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .then(res => {
+        alert("Success");
         console.log(res);
-        router.push("/");
+        // store.commit("firebase/onAuthUserDocChanged", res.uid);
+        // router.push("/initialize");
       })
       .catch(err => {
         console.log(err.message);

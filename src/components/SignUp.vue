@@ -1,19 +1,42 @@
 <template lang="pug">
-form
+form(:lazy-validation="lazy")
   h1 Sign Up
   span.input
-  input(type="email" name="email" placeholder="Email address" required)
+  input(type="email" placeholder="Email address" v-model="email" required)
   span#passwordMeter
-  input(type="password" name="password" id="password" placeholder="Password" title="Password min 8 characters. At least one UPPERCASE and one lowercase letter" required pattern="(?=^.{8,}$)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).*$")
-  button(type="submit" value="Sign Up" title="Submit form")
+  input(type="password" id="password" placeholder="Password" title="Password min 8 characters. At least one UPPERCASE and one lowercase letter" required pattern="(?=^.{8,}$)(?=.*[a-z])(?!.*\s).*$" v-model="password")
+  button(value="Sign Up" title="Submit form" @click="signUp")
     div(style="padding-right: 30px")
       span(style="color: #111;") → 
       span Sign Up
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import Firebase from "../firebase";
+
 export default {
-  name: "SignUp"
+  name: "SignUp",
+  data() {
+    return {
+      email: "",
+      password: "",
+      lazy: false
+    };
+  },
+  computed: {
+    ...mapGetters({
+      isSignedIn: "firebase/isSignedIn"
+    }),
+    userStatus() {
+      return this.isSignedIn;
+    }
+  },
+  methods: {
+    signUp() {
+      Firebase.singUpWithEmailAndPassword(this.email, this.password);
+    }
+  }
 };
 </script>
 
