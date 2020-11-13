@@ -46,7 +46,7 @@ export default {
 
   // making account using email & password
   // After making account, routing for '/signin'
-  singUpWithEmailAndPassword(email, password) {
+  signUpWithEmailAndPassword(email, password) {
     console.log('SighUp')
     firebase
       .auth()

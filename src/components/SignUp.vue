@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     signUp() {
-      Firebase.singUpWithEmailAndPassword(this.email, this.password);
+      Firebase.signUpWithEmailAndPassword(this.email, this.password);
     }
   }
 };
