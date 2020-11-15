@@ -4,9 +4,7 @@ import EvaluateFashion from "../views/EvaluateFashion.vue";
 import LogIn from "../components/LogIn.vue";
 import InitialAccount from "../views/InitialAccount.vue";
 import Home from "../views/Home.vue";
-
-import Firebase from "../firebase";
-import store from "../store";
+import { auth } from "../firebase"
 
 const routes = [
   {
@@ -67,16 +65,14 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  Firebase.onAuth();
-  let currnetUserStatus = store.getters["firebase/isSignedIn"];
-  let requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  if (!requiresAuth) {
-    next();
-  } else if (requiresAuth && !currnetUserStatus) {
+  const requiresAuth = to.matched.some(x => x.meta.requiresAuth)
+  if (requiresAuth && !auth.currentUser) {
     next("/home");
+  } else if (!requiresAuth && auth.currentUser) {
+    next('/');
   } else {
     next();
   }
-});
+})
 
 export default router;

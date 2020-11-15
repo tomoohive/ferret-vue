@@ -36,9 +36,8 @@ form
 </template>
 
 <script>
-import { mapMutations, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 import Firebase from "../firebase";
-import router from "../router";
 
 export default {
   name: "InitialAccount",
@@ -56,9 +55,6 @@ export default {
     };
   },
   compputed: {
-    ...mapMutations("firebase", {
-      initializeAccount: "initializeAccount"
-    }),
     ...mapGetters("firebase", {
       email: "email",
       user_doc: "user_doc"
@@ -97,8 +93,7 @@ export default {
         sex: this.sex,
         image_url: this.image_url
       };
-      this.initializeAccount(account);
-      router.push("/home");
+      this.$store.dispatch('firebase/initializeAccount', account);
     },
     onFileChange(e) {
       const files = e.target.files;

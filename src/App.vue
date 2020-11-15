@@ -1,6 +1,7 @@
 <template lang="pug">
-.product_name Fit to You.
-router-view
+div#app
+  .product_name Fit to You.
+  router-view
 </template>
 
 <style>

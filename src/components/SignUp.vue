@@ -13,7 +13,6 @@ form(:lazy-validation="lazy")
 
 <script>
 import { mapGetters } from "vuex";
-import Firebase from "../firebase";
 
 export default {
   name: "SignUp",
@@ -34,7 +33,10 @@ export default {
   },
   methods: {
     signUp() {
-      Firebase.signUpWithEmailAndPassword(this.email, this.password);
+      this.$store.dispatch("firebase/signUp", {
+        email: this.email,
+        password: this.password
+      });
     }
   }
 };

@@ -2,10 +2,10 @@
 form
   h1 Log In
   span.input
-  input(type="email" placeholder="Email address" required)
+  input(type="email" placeholder="Email address" required v-model="email")
   span#passwordMeter
-  input(type="password" id="password" placeholder="Password" title="Password min 8 characters. At least one UPPERCASE and one lowercase letter" required pattern="(?=^.{8,}$)(?=.*[a-z])(?!.*\s).*$")
-  button(@click="LogIn")
+  input(type="password" id="password" placeholder="Password" title="Password min 8 characters. At least one UPPERCASE and one lowercase letter" required pattern="(?=^.{8,}$)(?=.*[a-z])(?!.*\s).*$" v-model="password")
+  button(@click="logIn()")
     div(style="padding-right: 30px")
       span(style="color: #111;") → 
       span Log In
@@ -13,7 +13,6 @@ form
 
 <script>
 import { mapGetters } from "vuex";
-import Firebase from "../firebase";
 
 export default {
   name: "LogIn",
@@ -32,8 +31,11 @@ export default {
     }
   },
   methods: {
-    LogIn() {
-      Firebase.singInWithEmailAndPassword(this.email, this.password);
+    logIn() {
+      this.$store.dispatch('firebase/logIn', {
+        email: this.email,
+        password: this.password
+      })
     }
   }
 };

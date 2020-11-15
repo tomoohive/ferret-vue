@@ -2,31 +2,17 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-import firebase from "firebase/app";
-import Firebase from "./firebase";
+import { auth } from "./firebase";
 
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 
-Firebase.init();
-
-firebase.auth().onAuthStateChanged(user => {
-  if (user) {
-    if (user.ma) {
-      localStorage.setItem("jwt", user.ma);
-    }
-    store.commit("firebase/onAuthEmailChanged", user.email);
-    if (user.uid) {
-      store.commit("firebase/onUserStatusChanged", true);
-    } else {
-      store.commit("firebase/onUserStatusChanged", false);
-    }
-  } else {
-    store.commit("firebase/onAuthEmailChanged", "");
+let app;
+auth.onAuthStateChanged(() => {
+  if(!app) {
+    app = createApp(App)
+      .use(store)
+      .use(router)
+      .mount("#app");
   }
-
-  createApp(App)
-    .use(store)
-    .use(router)
-    .mount("#app");
 });

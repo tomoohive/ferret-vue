@@ -1,10 +1,12 @@
-import Firebase from "../../firebase";
+import router from "../../router";
+import * as fb from "../../firebase";
 
 const state = {
   name: "",
   email: "",
-  user_doc: "",
-  status: false
+  user_doc: null,
+  status: false,
+  userProfile: {}
 };
 
 const getters = {
@@ -22,7 +24,49 @@ const getters = {
   }
 };
 
-const actions = {};
+const actions = {
+  async logIn({ dispatch }, form) {
+    const { user } = await fb.auth.signInWithEmailAndPassword(form.email, form.password);
+    
+    console.log("login")
+    dispatch('fetchUserProfile', user);
+  },
+  async fetchUserProfie({ commit }, user) {
+    const userProfile = await fb.userCollection.doc(user.uid).get();
+
+    commit('setUserProfile', userProfile.data());
+
+    router.push('/home');
+  },
+  async signUp({ state }, form) {
+    const { user } = await fb.auth.createUserWithEmailAndPassword(form.email, form.password)
+
+    state.user_doc = user
+    console.log("signup")
+    await fb.userCollection.doc(user.uid).set({
+      email: form.email
+    });
+
+    router.push('/initialize');
+  },
+  async initializeAccount({ dispatch, state }, form) {
+    await fb.userCollection.doc(state.user.uid).set({
+      age: form.age,
+      name: form.username,
+      description: form.description,
+      email: state.email,
+      height: form.height,
+      weight: form.weight,
+      sex: form.sex,
+      posts: 0,
+      icon: form.image_url,
+      created_at: new Date(),
+      updated_at: new Date()
+    });
+
+    dispatch('fetchUserProfile', state.user);
+  }
+};
 
 const mutations = {
   onAuthNameChanged(state, name) {
@@ -39,23 +83,8 @@ const mutations = {
   onUserStatusChanged(state, status) {
     state.status = status;
   },
-  initializeAccount(state, account) {
-    const db = Firebase.firestore();
-    db.collection("user")
-      .doc(state.user_doc)
-      .set({
-        age: account.age,
-        name: account.username,
-        description: account.description,
-        email: state.email,
-        height: account.height,
-        weight: account.weight,
-        sex: account.sex,
-        posts: 0,
-        icon: account.image_url,
-        created_at: new Date(),
-        updated_at: new Date()
-      });
+  setUserProfile(state, val) {
+    state.userProfile = val;
   }
 };
 
